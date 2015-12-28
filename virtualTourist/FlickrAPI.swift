@@ -7,7 +7,6 @@
 //
 
 import Foundation
-// MARK: Lat/Lon Manipulation
 class FlickrAPI {
     
     let BASE_URL = "https://api.flickr.com/services/rest/"
@@ -24,8 +23,9 @@ class FlickrAPI {
     let LON_MIN = -180.0
     let LON_MAX = 180.0
     
+    
     // MARK: Lat/Lon Manipulation
-    func createBoundingBoxString(lat:Double, lon:Double) -> String {
+    func createBoundingBoxString(lat: Double, lon: Double) -> String {
         
         let latitude = lat
         let longitude = lon
@@ -38,6 +38,19 @@ class FlickrAPI {
         
         return "\(bottom_left_lon),\(bottom_left_lat),\(top_right_lon),\(top_right_lat)"
     }
+    
+    func methodArguments(lat: Double, lon:Double) -> [String: AnyObject] {
+        return [
+            "method": METHOD_NAME,
+            "api_key": API_KEY,
+            "bbox": createBoundingBoxString(lat, lon: lon),
+            "safe_search": SAFE_SEARCH,
+            "extras": EXTRAS,
+            "format": DATA_FORMAT,
+            "nojsoncallback": NO_JSON_CALLBACK
+        ]
+    }
+
     
     /* Check to make sure the latitude falls within [-90, 90] */
     func validLatitude(lat:Double) -> Bool {
@@ -125,6 +138,18 @@ class FlickrAPI {
         
         task.resume()
     }
+    
+    // MARK: - Shared Instance
+    
+    class func sharedInstance() -> FlickrAPI {
+        
+        struct Singleton {
+            static var sharedInstance = FlickrAPI()
+        }
+        
+        return Singleton.sharedInstance
+    }
+
     
     // MARK: Escape HTML Parameters
     func escapedParameters(parameters: [String : AnyObject]) -> String {

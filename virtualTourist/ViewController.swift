@@ -62,8 +62,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     
     // User tap action
     func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
-        print(view.annotation?.coordinate)
         let albumVC = self.storyboard?.instantiateViewControllerWithIdentifier("albumViewCtrl") as! AlbumViewController
+        albumVC.latitude = view.annotation!.coordinate.latitude as Double
+        albumVC.longitude = view.annotation!.coordinate.longitude as Double
+        
         self.navigationController?.pushViewController(albumVC, animated: true)
     }
     
