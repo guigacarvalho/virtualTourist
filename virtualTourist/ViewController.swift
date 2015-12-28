@@ -12,15 +12,21 @@ import CoreLocation
 
 
 class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate, UIGestureRecognizerDelegate {
-
+    
+    @IBOutlet weak var editButton: UIButton!
     @IBOutlet weak var mapView: MKMapView!
+    @IBOutlet weak var removePinsLabel: UILabel!
     let manager = CLLocationManager()
+    var editingPinsEnabled:Bool = false
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
         self.mapView.delegate = self
+        
+        self.removePinsLabel.hidden = true
         
         manager.delegate = self
         manager.desiredAccuracy = kCLLocationAccuracyBest
@@ -32,6 +38,12 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         longTap.numberOfTapsRequired = 0
         longTap.minimumPressDuration = 0.5
         self.mapView.addGestureRecognizer(longTap)
+        
+        let quickTap:UILongPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: "didLongTapMap:")
+        quickTap.delegate = self
+        quickTap.numberOfTapsRequired = 0
+        quickTap.minimumPressDuration = 0.5
+        self.mapView.addGestureRecognizer(quickTap)
     }
 
     override func didReceiveMemoryWarning() {
@@ -51,6 +63,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     // User tap action
     func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
         print(view.annotation?.coordinate)
+        let albumVC = self.storyboard?.instantiateViewControllerWithIdentifier("albumViewCtrl") as! AlbumViewController
+        self.navigationController?.pushViewController(albumVC, animated: true)
     }
     
     // Add a pin when there is a long tap
@@ -71,4 +85,22 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         }
     }
 
+    
+    @IBAction func editButtonClick(sender: AnyObject) {
+        editButtonLabelToggle()
+    }
+    
+    func editButtonLabelToggle() {
+        self.editingPinsEnabled = !self.editingPinsEnabled
+        if(self.editingPinsEnabled) {
+            self.editButton.setTitle("Done", forState: UIControlState.Normal)
+            self.removePinsLabel.hidden = false
+        } else {
+            self.editButton.setTitle("Edit", forState: UIControlState.Normal)
+            self.removePinsLabel.hidden = true
+        }
+    }
+    
+    
+    
 }

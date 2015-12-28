@@ -31,15 +31,28 @@
                                     </mask>
                                 </variation>
                             </mapView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="CLICK ON THE PINS TO REMOVE THEM" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ept-Ze-2PY">
+                                <rect key="frame" x="0.0" y="558.5" width="600" height="41.5"/>
+                                <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="41.5" id="9HF-bj-n45"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="EwM-Bk-9ZT" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="6Z7-HC-kSO"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="EwM-Bk-9ZT" secondAttribute="bottom" id="C0f-lE-yhJ"/>
+                            <constraint firstItem="Ept-Ze-2PY" firstAttribute="bottom" secondItem="EwM-Bk-9ZT" secondAttribute="bottom" id="FML-So-6jj"/>
                             <constraint firstItem="EwM-Bk-9ZT" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="OxA-lK-0GW"/>
+                            <constraint firstItem="Ept-Ze-2PY" firstAttribute="centerX" secondItem="EwM-Bk-9ZT" secondAttribute="centerX" id="aXB-jW-yCA"/>
                             <constraint firstItem="EwM-Bk-9ZT" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="ayn-f2-0a8"/>
                             <constraint firstItem="EwM-Bk-9ZT" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="eV8-NO-HPz"/>
                             <constraint firstAttribute="trailingMargin" secondItem="EwM-Bk-9ZT" secondAttribute="trailing" constant="-20" id="sfG-dP-vcm"/>
+                            <constraint firstItem="Ept-Ze-2PY" firstAttribute="width" secondItem="EwM-Bk-9ZT" secondAttribute="width" id="yr8-HK-4ro"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
@@ -48,14 +61,83 @@
                             </mask>
                         </variation>
                     </view>
-                    <navigationItem key="navigationItem" title="Virtual Tourist" id="NjN-D8-F9l"/>
+                    <navigationItem key="navigationItem" title="Virtual Tourist" id="NjN-D8-F9l">
+                        <barButtonItem key="rightBarButtonItem" style="plain" id="5d5-Z6-JZS">
+                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="y14-2R-BOt">
+                                <rect key="frame" x="447" y="7" width="133" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Edit"/>
+                                <connections>
+                                    <action selector="editButtonClick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="DSd-yb-qoo"/>
+                                </connections>
+                            </button>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
+                        <outlet property="editButton" destination="y14-2R-BOt" id="Xpm-XK-4FW"/>
                         <outlet property="mapView" destination="EwM-Bk-9ZT" id="K8k-Dw-8Ay"/>
+                        <outlet property="removePinsLabel" destination="Ept-Ze-2PY" id="B5C-Ff-JE6"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="671" y="1023"/>
+        </scene>
+        <!--Album View Controller-->
+        <scene sceneID="Ryi-ZL-vgI">
+            <objects>
+                <viewController storyboardIdentifier="albumViewCtrl" id="8mo-Wf-kg8" customClass="AlbumViewController" customModule="virtualTourist" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="yVS-Pr-xWI"/>
+                        <viewControllerLayoutGuide type="bottom" id="qCF-BL-WYT"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="ekl-SF-iwj">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="ZJg-bv-ouj">
+                                <rect key="frame" x="0.0" y="186" width="600" height="414"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="414" id="QZJ-JF-G3R"/>
+                                </constraints>
+                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="obf-Pt-Sqz">
+                                    <size key="itemSize" width="50" height="50"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                                <cells>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="usu-UM-cjq">
+                                        <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                            <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </view>
+                                    </collectionViewCell>
+                                </cells>
+                            </collectionView>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="z4z-e4-HCg">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="178"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="178" id="oO4-iu-GoB"/>
+                                </constraints>
+                            </mapView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="z4z-e4-HCg" firstAttribute="centerX" secondItem="ekl-SF-iwj" secondAttribute="centerX" id="CDX-kw-dyl"/>
+                            <constraint firstItem="ZJg-bv-ouj" firstAttribute="centerX" secondItem="ekl-SF-iwj" secondAttribute="centerX" id="Eyo-1s-51S"/>
+                            <constraint firstItem="z4z-e4-HCg" firstAttribute="width" secondItem="ekl-SF-iwj" secondAttribute="width" id="KbV-UI-ZGS"/>
+                            <constraint firstItem="ZJg-bv-ouj" firstAttribute="leading" secondItem="z4z-e4-HCg" secondAttribute="trailing" constant="-600" id="XPN-M9-wcP"/>
+                            <constraint firstItem="ZJg-bv-ouj" firstAttribute="width" secondItem="ekl-SF-iwj" secondAttribute="width" id="kzi-P3-0aN"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="NR0-aZ-yFb" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="675" y="1732"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="K7J-3v-7Dv">

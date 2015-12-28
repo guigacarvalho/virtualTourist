@@ -15,6 +15,7 @@
 		797FB39C1C2E398D008DF704 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 797FB39A1C2E398D008DF704 /* LaunchScreen.storyboard */; };
 		797FB3A71C2E398D008DF704 /* virtualTouristTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 797FB3A61C2E398D008DF704 /* virtualTouristTests.swift */; };
 		797FB3B21C2E398D008DF704 /* virtualTouristUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 797FB3B11C2E398D008DF704 /* virtualTouristUITests.swift */; };
+		79A78BBF1C30C82900BBD9FB /* AlbumViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79A78BBE1C30C82900BBD9FB /* AlbumViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +50,7 @@
 		797FB3AD1C2E398D008DF704 /* virtualTouristUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = virtualTouristUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		797FB3B11C2E398D008DF704 /* virtualTouristUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = virtualTouristUITests.swift; sourceTree = "<group>"; };
 		797FB3B31C2E398D008DF704 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		79A78BBE1C30C82900BBD9FB /* AlbumViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,6 +108,7 @@
 				797FB39A1C2E398D008DF704 /* LaunchScreen.storyboard */,
 				797FB39D1C2E398D008DF704 /* Info.plist */,
 				797FB3951C2E398D008DF704 /* virtualTourist.xcdatamodeld */,
+				79A78BBE1C30C82900BBD9FB /* AlbumViewController.swift */,
 			);
 			path = virtualTourist;
 			sourceTree = "<group>";
@@ -259,6 +262,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				79A78BBF1C30C82900BBD9FB /* AlbumViewController.swift in Sources */,
 				797FB3911C2E398D008DF704 /* ViewController.swift in Sources */,
 				797FB3971C2E398D008DF704 /* virtualTourist.xcdatamodeld in Sources */,
 				797FB38F1C2E398D008DF704 /* AppDelegate.swift in Sources */,
@@ -488,6 +492,7 @@
 				797FB3B81C2E398D008DF704 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		797FB3B91C2E398D008DF704 /* Build configuration list for PBXNativeTarget "virtualTouristTests" */ = {
 			isa = XCConfigurationList;
@@ -496,6 +501,7 @@
 				797FB3BB1C2E398D008DF704 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		797FB3BC1C2E398D008DF704 /* Build configuration list for PBXNativeTarget "virtualTouristUITests" */ = {
 			isa = XCConfigurationList;
@@ -504,6 +510,7 @@
 				797FB3BE1C2E398D008DF704 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
