@@ -62,11 +62,20 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     
     // User tap action
     func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
-        let albumVC = self.storyboard?.instantiateViewControllerWithIdentifier("albumViewCtrl") as! AlbumViewController
-        albumVC.latitude = view.annotation!.coordinate.latitude as Double
-        albumVC.longitude = view.annotation!.coordinate.longitude as Double
+        if(self.removePinsLabel.hidden == true) {
+            let albumVC = self.storyboard?.instantiateViewControllerWithIdentifier("albumViewCtrl") as! AlbumViewController
+            albumVC.latitude = view.annotation!.coordinate.latitude as Double
+            albumVC.longitude = view.annotation!.coordinate.longitude as Double
+            
+            self.navigationController?.pushViewController(albumVC, animated: true)
+            mapView.deselectAnnotation(view.annotation, animated: false)
+
+        } else {
+            mapView.deselectAnnotation(view.annotation, animated: false)
+            mapView.removeAnnotation(view.annotation!)
+        }
         
-        self.navigationController?.pushViewController(albumVC, animated: true)
+        mapView.deselectAnnotation(view.annotation, animated: false)
     }
     
     // Add a pin when there is a long tap
