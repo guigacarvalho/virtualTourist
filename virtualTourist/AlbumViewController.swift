@@ -13,14 +13,20 @@ import CoreLocation
 
 class AlbumViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, MKMapViewDelegate {
 
+    var photos:[Int] = [0,0,0,0,0,0,0,0,0,0,0]
     var latitude:Double?
+    var startEditing:Bool = false
     var longitude:Double?
     let regionRadius: CLLocationDistance = 10000
     @IBOutlet weak var photoFlowLayout: UICollectionViewFlowLayout!
     @IBOutlet weak var mapView: MKMapView!
     
+    @IBOutlet weak var photoCollectionView: UICollectionView!
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // Setting up photoCollectionView and its layout
+        photoCollectionView.allowsMultipleSelection = true
         
         let space: CGFloat = 0.0
         let flowLength = (self.view.frame.size.width) / 3.0
@@ -41,9 +47,7 @@ class AlbumViewController: UIViewController, UICollectionViewDataSource, UIColle
         
 //        let methodArguments:[String: AnyObject] = FlickrAPI.sharedInstance().methodArguments(latitude!, lon: longitude!)
 //        print(FlickrAPI.sharedInstance().getImageFromFlickrBySearch(methodArguments))
-        
-        
-        
+     
     }
     
     override func didReceiveMemoryWarning() {
@@ -65,14 +69,22 @@ class AlbumViewController: UIViewController, UICollectionViewDataSource, UIColle
     }
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 50
+        return photos.count
     }
+    
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath:NSIndexPath)
     {
-        
-        print(indexPath.row)
-//        self.navigationController!.pushViewController(detailController, animated: true)
-        
+        let cell = collectionView.cellForItemAtIndexPath(indexPath) as! PhotoCell
+        cell.highlighted = true
+        cell.photoImageView.image = UIImage(named: "placeholder-highlighted")
     }
-
+    @IBOutlet weak var removePhotos: UIButton!
+    @IBAction func removePhotos(sender: AnyObject) {
+        let selectedItems = photoCollectionView.indexPathsForSelectedItems()
+        for _ in selectedItems! {
+            photos.removeFirst()
+        }
+        photoCollectionView.deleteItemsAtIndexPaths(selectedItems!)
+    }
+    
 }

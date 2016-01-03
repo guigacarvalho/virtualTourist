@@ -96,7 +96,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="ZJg-bv-ouj">
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" indicatorStyle="white" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="ZJg-bv-ouj">
                                 <rect key="frame" x="0.0" y="138" width="600" height="462"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="414" id="QZJ-JF-G3R"/>
@@ -148,15 +148,27 @@
                                     <constraint firstAttribute="height" constant="178" id="oO4-iu-GoB"/>
                                 </constraints>
                             </mapView>
+                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8cu-vd-eGo">
+                                <rect key="frame" x="0.0" y="559" width="600" height="41"/>
+                                <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <state key="normal" title="CLICK HERE TO REMOVE THE SELECTED PHOTOS">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="removePhotos:" destination="8mo-Wf-kg8" eventType="touchUpInside" id="Dja-KZ-L2E"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="8cu-vd-eGo" firstAttribute="top" secondItem="ZJg-bv-ouj" secondAttribute="bottom" constant="-30" id="9hr-yn-8HO"/>
                             <constraint firstItem="z4z-e4-HCg" firstAttribute="centerX" secondItem="ekl-SF-iwj" secondAttribute="centerX" id="CDX-kw-dyl"/>
                             <constraint firstItem="qCF-BL-WYT" firstAttribute="top" secondItem="ZJg-bv-ouj" secondAttribute="bottom" id="D82-CR-tQg"/>
                             <constraint firstItem="ZJg-bv-ouj" firstAttribute="centerX" secondItem="ekl-SF-iwj" secondAttribute="centerX" id="Eyo-1s-51S"/>
                             <constraint firstItem="z4z-e4-HCg" firstAttribute="width" secondItem="ekl-SF-iwj" secondAttribute="width" id="KbV-UI-ZGS"/>
                             <constraint firstItem="ZJg-bv-ouj" firstAttribute="leading" secondItem="z4z-e4-HCg" secondAttribute="trailing" constant="-600" id="XPN-M9-wcP"/>
                             <constraint firstItem="z4z-e4-HCg" firstAttribute="top" secondItem="yVS-Pr-xWI" secondAttribute="bottom" id="YQV-46-p2p"/>
+                            <constraint firstItem="8cu-vd-eGo" firstAttribute="width" secondItem="ZJg-bv-ouj" secondAttribute="width" id="jHC-rx-ygi"/>
                             <constraint firstItem="ZJg-bv-ouj" firstAttribute="width" secondItem="ekl-SF-iwj" secondAttribute="width" id="kzi-P3-0aN"/>
                             <constraint firstItem="ZJg-bv-ouj" firstAttribute="top" secondItem="z4z-e4-HCg" secondAttribute="bottom" constant="-60" id="xUC-MR-HQa"/>
                             <constraint firstItem="z4z-e4-HCg" firstAttribute="leading" secondItem="ekl-SF-iwj" secondAttribute="leadingMargin" constant="-20" id="zZq-eN-hRE"/>
@@ -170,7 +182,9 @@
                     </view>
                     <connections>
                         <outlet property="mapView" destination="z4z-e4-HCg" id="Wxd-uM-xbE"/>
+                        <outlet property="photoCollectionView" destination="ZJg-bv-ouj" id="hmm-Dm-aGi"/>
                         <outlet property="photoFlowLayout" destination="obf-Pt-Sqz" id="EtL-jw-KdY"/>
+                        <outlet property="removePhotos" destination="8cu-vd-eGo" id="kzn-vJ-Rae"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NR0-aZ-yFb" userLabel="First Responder" sceneMemberID="firstResponder"/>
