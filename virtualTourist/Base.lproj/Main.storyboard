@@ -115,8 +115,8 @@
                                             <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ID5-gY-dCg">
-                                                    <rect key="frame" x="8" y="8" width="34" height="35"/>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ID5-gY-dCg">
+                                                    <rect key="frame" x="8" y="8" width="34" height="34"/>
                                                 </imageView>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -148,9 +148,12 @@
                                     <constraint firstAttribute="height" constant="178" id="oO4-iu-GoB"/>
                                 </constraints>
                             </mapView>
-                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8cu-vd-eGo">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8cu-vd-eGo">
                                 <rect key="frame" x="0.0" y="559" width="600" height="41"/>
                                 <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="41" id="e47-9z-9Bl"/>
+                                </constraints>
                                 <state key="normal" title="CLICK HERE TO REMOVE THE SELECTED PHOTOS">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -161,7 +164,8 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="8cu-vd-eGo" firstAttribute="top" secondItem="ZJg-bv-ouj" secondAttribute="bottom" constant="-30" id="9hr-yn-8HO"/>
+                            <constraint firstItem="8cu-vd-eGo" firstAttribute="centerX" secondItem="ZJg-bv-ouj" secondAttribute="centerX" id="8QW-R7-Gos"/>
+                            <constraint firstItem="8cu-vd-eGo" firstAttribute="top" secondItem="ZJg-bv-ouj" secondAttribute="bottom" constant="-41" id="9hr-yn-8HO"/>
                             <constraint firstItem="z4z-e4-HCg" firstAttribute="centerX" secondItem="ekl-SF-iwj" secondAttribute="centerX" id="CDX-kw-dyl"/>
                             <constraint firstItem="qCF-BL-WYT" firstAttribute="top" secondItem="ZJg-bv-ouj" secondAttribute="bottom" id="D82-CR-tQg"/>
                             <constraint firstItem="ZJg-bv-ouj" firstAttribute="centerX" secondItem="ekl-SF-iwj" secondAttribute="centerX" id="Eyo-1s-51S"/>

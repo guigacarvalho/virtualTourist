@@ -14,15 +14,12 @@ import CoreData
 class Photo : NSManagedObject {
     
     struct Keys {
-        static let Title = "title"
-        static let FileName = "file_name"
-        static let ReleaseDate = "release_date"
+        static let ID = "id"
+        static let imagePath = "url_m"
     }
     
-    @NSManaged var title: String
     @NSManaged var id: NSNumber
-    @NSManaged var fileName: String?
-    @NSManaged var releaseDate: NSDate?
+    @NSManaged var imagePath: String?
     @NSManaged var pin: Pin?
     
     override init(entity: NSEntityDescription, insertIntoManagedObjectContext context: NSManagedObjectContext?) {
@@ -36,25 +33,18 @@ class Photo : NSManagedObject {
         super.init(entity: entity, insertIntoManagedObjectContext: context)
         
         // Dictionary
-        title = dictionary[Keys.Title] as! String
-//        id = dictionary[TheMovieDB.Keys.ID] as! Int
-//        posterPath = dictionary[Keys.PosterPath] as? String
-        
-//        if let dateString = dictionary[Keys.ReleaseDate] as? String {
-//            if let date = TheMovieDB.sharedDateFormatter.dateFromString(dateString) {
-//                releaseDate = date
-//            }
-//        }
+        id = (dictionary[Keys.ID]?.integerValue)!
+        imagePath = dictionary[Keys.imagePath] as? String
+
     }
-//    
-//    var posterImage: UIImage? {
-//        
-//        get {
-////            return TheMovieDB.Caches.imageCache.imageWithIdentifier(posterPath)
-//        }
-//        
-//        set {
-////            TheMovieDB.Caches.imageCache.storeImage(newValue, withIdentifier: posterPath!)
-//        }
-//    }
+
+    var image: UIImage? {
+        get {
+            return FlickrAPI.Caches.imageCache.imageWithIdentifier(imagePath)
+        }
+        
+        set {
+            FlickrAPI.Caches.imageCache.storeImage(image, withIdentifier: imagePath!)
+        }
+    }
 }

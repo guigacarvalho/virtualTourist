@@ -7,8 +7,12 @@
 //
 
 import Foundation
+import UIKit
+
 class FlickrAPI {
-    
+
+    typealias CompletionHander = (result: AnyObject!, error: NSError?) -> Void
+
     let BASE_URL = "https://api.flickr.com/services/rest/"
     let METHOD_NAME = "flickr.photos.search"
     let API_KEY = "063c04acddf53186989318e3194c08f7"
@@ -22,8 +26,10 @@ class FlickrAPI {
     let LAT_MAX = 90.0
     let LON_MIN = -180.0
     let LON_MAX = 180.0
-    
-    
+
+    // Importing the AppDelegate
+    let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+
     // MARK: Lat/Lon Manipulation
     func createBoundingBoxString(lat: Double, lon: Double) -> String {
         
@@ -46,11 +52,11 @@ class FlickrAPI {
             "bbox": createBoundingBoxString(lat, lon: lon),
             "safe_search": SAFE_SEARCH,
             "extras": EXTRAS,
+            "per_page": 10,
             "format": DATA_FORMAT,
             "nojsoncallback": NO_JSON_CALLBACK
         ]
     }
-
     
     /* Check to make sure the latitude falls within [-90, 90] */
     func validLatitude(lat:Double) -> Bool {
@@ -77,80 +83,6 @@ class FlickrAPI {
         return "(\(latitude), \(longitude))"
     }
     
-    // MARK: Flickr API
-    /* Function makes first request to get a random page, then it makes a request to get an image with the random page */
-    func getImageFromFlickrBySearch(methodArguments: [String : AnyObject]) {
-        
-        let session = NSURLSession.sharedSession()
-        let urlString = BASE_URL + escapedParameters(methodArguments)
-        let url = NSURL(string: urlString)!
-        let request = NSURLRequest(URL: url)
-        
-        let task = session.dataTaskWithRequest(request) { (data, response, error) in
-            
-            /* GUARD: Did we get a successful 2XX response? */
-            guard let statusCode = (response as? NSHTTPURLResponse)?.statusCode where statusCode >= 200 && statusCode <= 299 else {
-                if let response = response as? NSHTTPURLResponse {
-                    print("Your request returned an invalid response! Status code: \(response.statusCode)!")
-                } else if let response = response {
-                    print("Your request returned an invalid response! Response: \(response)!")
-                } else {
-                    print("Your request returned an invalid response!")
-                }
-                return
-            }
-            
-            /* GUARD: Was there any data returned? */
-            guard let data = data else {
-                print("No data was returned by the request!")
-                return
-            }
-            
-            /* Parse the data! */
-            let parsedResult: AnyObject!
-            do {
-                parsedResult = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)
-            } catch {
-                parsedResult = nil
-                print("Could not parse the data as JSON: '\(data)'")
-                return
-            }
-            
-            /* GUARD: Did Flickr return an error? */
-            guard let stat = parsedResult["stat"] as? String where stat == "ok" else {
-                print("Flickr API returned an error. See error code and message in \(parsedResult)")
-                return
-            }
-            
-            /* GUARD: Is "photos" key in our result? */
-            guard let photosDictionary = parsedResult["photos"] as? NSDictionary else {
-                print("Cannot find keys 'photos' in \(parsedResult)")
-                return
-            }
-            
-            /* GUARD: Is "pages" key in the photosDictionary? */
-            guard let _ = photosDictionary["pages"] as? Int else {
-                print("Cannot find key 'pages' in \(photosDictionary)")
-                return
-            }
-            
-        }
-        
-        task.resume()
-    }
-    
-    // MARK: - Shared Instance
-    
-    class func sharedInstance() -> FlickrAPI {
-        
-        struct Singleton {
-            static var sharedInstance = FlickrAPI()
-        }
-        
-        return Singleton.sharedInstance
-    }
-
-    
     // MARK: Escape HTML Parameters
     func escapedParameters(parameters: [String : AnyObject]) -> String {
         
@@ -171,6 +103,88 @@ class FlickrAPI {
         
         return (!urlVars.isEmpty ? "?" : "") + urlVars.joinWithSeparator("&")
     }
+    
+    
+    // MARK: Flickr API
+    /* Function makes first request to get a random page, then it makes a request to get an image with the random page */
+    func getImageFromFlickrBySearch(methodArguments: [String : AnyObject],completionHandler: CompletionHander) -> NSURLSessionDataTask {
+
+        
+        let session = NSURLSession.sharedSession()
+        let urlString = BASE_URL + escapedParameters(methodArguments)
+        let url = NSURL(string: urlString)!
+        let request = NSURLRequest(URL: url)
+        let task = session.dataTaskWithRequest(request) { (data, response, downloadError) in
+            
+            if let error = downloadError {
+                let newError = FlickrAPI.errorForData(data, response: response, error: error)
+                completionHandler(result: nil, error: newError)
+            } else {
+                print("Step 3 - taskForResource's completionHandler is invoked.")
+                FlickrAPI.parseJSONWithCompletionHandler(data!, completionHandler: completionHandler)
+            }
+        }
+        
+        task.resume()
+        
+        return task
+        
+    }
+    
+    class func errorForData(data: NSData?, response: NSURLResponse?, error: NSError) -> NSError {
+        
+        if data == nil {
+            return error
+        }
+        
+        do {
+            let parsedResult = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.AllowFragments)
+            
+            print(parsedResult)
+            if let parsedResult = parsedResult as? [String : AnyObject], errorMessage = parsedResult["stat"] as? String {
+                let userInfo = [NSLocalizedDescriptionKey : errorMessage]
+                return NSError(domain: "TMDB Error", code: 1, userInfo: userInfo)
+            }
+            
+        } catch _ {}
+        
+        return error
+    }
+    
+    // Parsing the JSON
+    
+    class func parseJSONWithCompletionHandler(data: NSData, completionHandler: CompletionHander) {
+        var parsingError: NSError? = nil
+        
+        let parsedResult: AnyObject?
+        do {
+            parsedResult = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments)
+        } catch let error as NSError {
+            parsingError = error
+            parsedResult = nil
+        }
+        
+        if let error = parsingError {
+            completionHandler(result: nil, error: error)
+        } else {
+            print("Step 4 - parseJSONWithCompletionHandler is invoked.")
+            completionHandler(result: parsedResult, error: nil)
+        }
+    }
+    
+
+    
+    
+    // MARK: - Shared Instance
+    class func sharedInstance() -> FlickrAPI {
+        
+        struct Singleton {
+            static var sharedInstance = FlickrAPI()
+        }
+        
+        return Singleton.sharedInstance
+    }
+
     
     // MARK: - Shared Image Cache
     struct Caches {
