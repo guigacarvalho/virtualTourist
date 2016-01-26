@@ -59,9 +59,6 @@ class AlbumViewController: UIViewController, UICollectionViewDataSource, UIColle
             if let error = error {
                 print(error)
             } else {
-//                print("here")
-//                print(JSONResult)
-                
                 
                 /* GUARD: Is "photos" key in our result? */
                 guard let photosDictionary = JSONResult["photos"] as? [String : AnyObject] else {
@@ -112,11 +109,30 @@ class AlbumViewController: UIViewController, UICollectionViewDataSource, UIColle
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("photoItem", forIndexPath: indexPath) as! PhotoCell
         cell.photoImageView.image = UIImage(named: "placeholder")
-        let url = NSURL(string: photos[indexPath.row].imagePath!)
-        let data = NSData(contentsOfURL: url!)
-        let image = UIImage(data: data!)
-        cell.photoImageView.image = image!
         
+        let photo = photos[indexPath.row]
+        
+        FlickrAPI.sharedInstance().taskForImage(photo.imagePath!)  { data, error in
+            
+            if let error = error {
+                print("Poster download error: \(error.localizedDescription)")
+            }
+            
+            if let data = data {
+                // Craete the image
+                let image = UIImage(data: data)
+                
+                // update the model, so that the infrmation gets cashed
+                photo.image = image
+                
+                // update the cell later, on the main thread
+                
+                dispatch_async(dispatch_get_main_queue()) {
+                    cell.photoImageView.image = image
+                }
+            }
+        }
+    
         return cell
 
     }

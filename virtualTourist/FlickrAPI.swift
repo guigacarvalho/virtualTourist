@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-class FlickrAPI {
+class FlickrAPI: NSObject {
 
     typealias CompletionHander = (result: AnyObject!, error: NSError?) -> Void
 
@@ -26,6 +26,14 @@ class FlickrAPI {
     let LAT_MAX = 90.0
     let LON_MIN = -180.0
     let LON_MAX = 180.0
+    
+    var session: NSURLSession
+    
+    override init() {
+        session = NSURLSession.sharedSession()
+        super.init()
+    }
+
 
     // Importing the AppDelegate
     let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
@@ -130,6 +138,29 @@ class FlickrAPI {
         return task
         
     }
+    
+    func taskForImage(url: String, completionHandler: (imageData: NSData?, error: NSError?) ->  Void) -> NSURLSessionTask {
+        print(url)
+        
+        let nsurl = NSURL(string: url)
+        
+        let request = NSURLRequest(URL: nsurl!)
+        
+        let task = session.dataTaskWithRequest(request) {data, response, downloadError in
+            
+            if let error = downloadError {
+                let newError = FlickrAPI.errorForData(data, response: response, error: error)
+                completionHandler(imageData: nil, error: newError)
+            } else {
+                completionHandler(imageData: data, error: nil)
+            }
+        }
+        
+        task.resume()
+        
+        return task
+    }
+
     
     class func errorForData(data: NSData?, response: NSURLResponse?, error: NSError) -> NSError {
         
