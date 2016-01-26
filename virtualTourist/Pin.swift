@@ -15,14 +15,14 @@ import CoreData
 class Pin : NSManagedObject {
     
         struct Keys {
-            static let Name = "name"
             static let Photos = "photos"
-            static let ID = "id"
+            static let Longitude = "lon"
+            static let Latitude = "lat"
         }
         
         // 4. We are promoting these four from simple properties, to Core Data attributes
-        @NSManaged var name: String
-        @NSManaged var id: NSNumber
+        @NSManaged var lon: NSNumber
+        @NSManaged var lat: NSNumber
         @NSManaged var photos: [Photo]
         
         // 5. Include this standard Core Data init method.
@@ -52,8 +52,8 @@ class Pin : NSManagedObject {
             
             // After the Core Data work has been taken care of we can init the properties from the
             // dictionary. This works in the same way that it did before we started on Core Data
-            name = dictionary[Keys.Name] as! String
-            id = dictionary[Keys.ID] as! Int
+            lon = dictionary[Keys.Latitude] as! Double
+            lat = dictionary[Keys.Longitude] as! Double
         }
 }
 

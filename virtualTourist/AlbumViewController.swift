@@ -13,7 +13,7 @@ import CoreData
 
 class AlbumViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, MKMapViewDelegate {
     
-    var location: Pin!
+    var locationPin: Pin!
     
     var photos = [Photo]()
     
@@ -31,6 +31,13 @@ class AlbumViewController: UIViewController, UICollectionViewDataSource, UIColle
         
         // Setting up photoCollectionView and its layout
         photoCollectionView.allowsMultipleSelection = true
+
+        // Persist Pin object
+        let dictionary:[String: AnyObject] = [
+            "lat": self.latitude!,
+            "lon": self.longitude!
+        ]
+        locationPin = Pin(dictionary: dictionary, context: self.sharedContext)
         
         let space: CGFloat = 0.0
         let flowLength = (self.view.frame.size.width) / 3.0
@@ -68,25 +75,24 @@ class AlbumViewController: UIViewController, UICollectionViewDataSource, UIColle
                 }
 
                 
-                photoDictionary.map() { (dictionary: [String : AnyObject]) -> Photo in
-                    print (dictionary)
-                    
-                    let photo = Photo(dictionary: dictionary, context: self.sharedContext)
-                    
-                    photo.pin = self.location
-                    
-                    self.photos.append(photo)
-                    
-                    return photo
+                photoDictionary.map() { (dictionary: [String : AnyObject]) in
+                    dispatch_async(dispatch_get_main_queue()) {
+                        
+                        let photo = Photo(dictionary: dictionary, context: self.sharedContext)
+                        
+                        photo.pin = self.locationPin
+                        
+                        self.photos.append(photo)
+                    }
                 }
 
                     // Update the table on the main thread
                     dispatch_async(dispatch_get_main_queue()) {
                         self.photoCollectionView.reloadData()
+                        // Save the context
+                        self.appDelegate.saveContext()
                     }
 
-                    // Save the context
-                    self.appDelegate.saveContext()
             }
         }
      
