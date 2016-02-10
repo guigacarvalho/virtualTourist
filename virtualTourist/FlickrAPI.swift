@@ -26,14 +26,12 @@ class FlickrAPI: NSObject {
     let LAT_MAX = 90.0
     let LON_MIN = -180.0
     let LON_MAX = 180.0
-    
     var session: NSURLSession
     
     override init() {
         session = NSURLSession.sharedSession()
         super.init()
     }
-
 
     // Importing the AppDelegate
     let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
@@ -112,12 +110,9 @@ class FlickrAPI: NSObject {
         return (!urlVars.isEmpty ? "?" : "") + urlVars.joinWithSeparator("&")
     }
     
-    
     // MARK: Flickr API
     /* Function makes first request to get a random page, then it makes a request to get an image with the random page */
     func getImageFromFlickrBySearch(methodArguments: [String : AnyObject],completionHandler: CompletionHander) -> NSURLSessionDataTask {
-
-        
         let session = NSURLSession.sharedSession()
         let urlString = BASE_URL + escapedParameters(methodArguments)
         let url = NSURL(string: urlString)!
@@ -160,7 +155,6 @@ class FlickrAPI: NSObject {
         
         return task
     }
-
     
     class func errorForData(data: NSData?, response: NSURLResponse?, error: NSError) -> NSError {
         
@@ -183,7 +177,6 @@ class FlickrAPI: NSObject {
     }
     
     // Parsing the JSON
-    
     class func parseJSONWithCompletionHandler(data: NSData, completionHandler: CompletionHander) {
         var parsingError: NSError? = nil
         
@@ -203,9 +196,6 @@ class FlickrAPI: NSObject {
         }
     }
     
-
-    
-    
     // MARK: - Shared Instance
     class func sharedInstance() -> FlickrAPI {
         
@@ -216,7 +206,6 @@ class FlickrAPI: NSObject {
         return Singleton.sharedInstance
     }
 
-    
     // MARK: - Shared Image Cache
     struct Caches {
         static let imageCache = ImageCache()

@@ -13,7 +13,6 @@ class ImageCache {
     private var inMemoryCache = NSCache()
     
     // MARK: - Retreiving images
-    
     func imageWithIdentifier(identifier: String?) -> UIImage? {
         
         // If the identifier is nil, or empty, return nil
@@ -37,7 +36,6 @@ class ImageCache {
     }
     
     // MARK: - Saving images
-    
     func storeImage(image: UIImage?, withIdentifier identifier: String) {
         let path = pathForIdentifier(identifier)
         
@@ -61,7 +59,6 @@ class ImageCache {
     }
     
     // MARK: - Helper
-    
     func pathForIdentifier(identifier: String) -> String {
         let documentsDirectoryURL: NSURL = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first!
         let fullURL = documentsDirectoryURL.URLByAppendingPathComponent(identifier)
