@@ -74,8 +74,8 @@ class AlbumViewController: UIViewController, UICollectionViewDataSource, UIColle
 
                 // Update the table and context on the main thread
                 dispatch_async(dispatch_get_main_queue()) {
-                    self.photoCollectionView.reloadData()
                     self.appDelegate.saveContext()
+                    self.photoCollectionView.reloadData()
                 }
             }
         }
@@ -115,11 +115,12 @@ class AlbumViewController: UIViewController, UICollectionViewDataSource, UIColle
                     // Craete the image
                     let image = UIImage(data: data)
                     // update the model, so that the information gets cached
-                    photo.image = image
-                    // update the cell later, on the main thread
                     dispatch_async(dispatch_get_main_queue()) {
+                        photo.image = image
+                        // update the cell later, on the main thread
                         cell.photoImageView.image = image
                     }
+
                 }
             }
         }
@@ -145,8 +146,11 @@ class AlbumViewController: UIViewController, UICollectionViewDataSource, UIColle
     @IBAction func removePhotos(sender: AnyObject) {
         let selectedItems = photoCollectionView.indexPathsForSelectedItems()
         for item in selectedItems! {
+            
             let photo = photos[item.row]
-            sharedContext.deleteObject(photo)
+            dispatch_async(dispatch_get_main_queue()) {
+                self.sharedContext.deleteObject(photo)
+            }
             // Remove the photo from the array
             photos.removeAtIndex(item.row)
         }
