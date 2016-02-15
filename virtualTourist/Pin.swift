@@ -52,8 +52,8 @@ class Pin : NSManagedObject {
             
             // After the Core Data work has been taken care of we can init the properties from the
             // dictionary. This works in the same way that it did before we started on Core Data
-            lon = dictionary[Keys.Latitude] as! Double
-            lat = dictionary[Keys.Longitude] as! Double
+            lon = dictionary[Keys.Longitude] as! Double
+            lat = dictionary[Keys.Latitude] as! Double
         }
 }
 

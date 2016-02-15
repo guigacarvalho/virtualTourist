@@ -9,15 +9,21 @@
 import UIKit
 import MapKit
 import CoreLocation
+import CoreData
+
 
 
 class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate, UIGestureRecognizerDelegate {
     
     @IBOutlet weak var editButton: UIButton!
     @IBOutlet weak var mapView: MKMapView!
+    let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     @IBOutlet weak var removePinsLabel: UILabel!
     let manager = CLLocationManager()
     var editingPinsEnabled:Bool = false
+    var locationPins = [Pin]()
+
+    
 
     
     override func viewDidLoad() {
@@ -67,12 +73,22 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
             let albumVC = self.storyboard?.instantiateViewControllerWithIdentifier("albumViewCtrl") as! AlbumViewController
             albumVC.latitude = view.annotation!.coordinate.latitude as Double
             albumVC.longitude = view.annotation!.coordinate.longitude as Double
+            let dictionary:[String: AnyObject] = [
+                "lat": view.annotation!.coordinate.latitude,
+                "lon": view.annotation!.coordinate.longitude
+            ]
+            
+            let tempPin = locationPins.filter({
+                $0.lon == dictionary["lon"] as! NSNumber && $0.lon == dictionary["lon"] as! NSNumber
+            })[0]
+            
+            albumVC.locationPin = tempPin
             
             self.navigationController?.pushViewController(albumVC, animated: true)
         } else {
             mapView.removeAnnotation(view.annotation!)
         }
-        
+         
 
     }
     
@@ -90,6 +106,13 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
                 let annotation = MKPointAnnotation()
                 annotation.coordinate = touchMapCoordinate
                 mapView.addAnnotation(annotation)
+
+                let dictionary:[String: AnyObject] = [
+                    "lat": annotation.coordinate.latitude,
+                    "lon": annotation.coordinate.longitude
+                ]
+                let locationPin = Pin(dictionary: dictionary, context: self.sharedContext)
+                locationPins.append(locationPin)
             }
         }
     }
@@ -110,6 +133,11 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         }
     }
     
+    
+    // MARK: - Core Data Convenience
+    lazy var sharedContext: NSManagedObjectContext =  {
+        return self.appDelegate.managedObjectContext
+    }()
     
     
 }

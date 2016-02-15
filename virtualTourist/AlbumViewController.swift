@@ -33,11 +33,6 @@ class AlbumViewController: UIViewController, UICollectionViewDataSource, UIColle
         photoCollectionView.allowsMultipleSelection = true
 
         // Persist Pin object
-        let dictionary:[String: AnyObject] = [
-            "lat": self.latitude!,
-            "lon": self.longitude!
-        ]
-        locationPin = Pin(dictionary: dictionary, context: self.sharedContext)
         let space: CGFloat = 0.0
         let flowLength = (self.view.frame.size.width) / 3.0
         photoFlowLayout.minimumLineSpacing = space
@@ -50,35 +45,45 @@ class AlbumViewController: UIViewController, UICollectionViewDataSource, UIColle
         annotation.coordinate = location.coordinate
         mapView.addAnnotation(annotation)
         centerMapOnLocation(location)
-        let methodArguments:[String: AnyObject] = FlickrAPI.sharedInstance().methodArguments(latitude!, lon: longitude!)
-        FlickrAPI.sharedInstance().getImageFromFlickrBySearch(methodArguments) { JSONResult, error  in
-            if let error = error {
-                print(error)
-            } else {
-                /* GUARD: Is "photos" key in our result? */
-                guard let photosDictionary = JSONResult["photos"] as? [String : AnyObject] else {
-                    print("Cannot find keys 'photos' in \(JSONResult)")
-                    return
-                }
-                guard let photoDictionary = photosDictionary["photo"] as? [[String : AnyObject]] else {
-                    print("Cannot find keys 'photo' in \(photosDictionary)")
-                    return
-                }
-                photoDictionary.map() { (dictionary: [String : AnyObject]) in
-                    dispatch_async(dispatch_get_main_queue()) {
+        
+        if !locationPin.photos.isEmpty {
+            dispatch_async(dispatch_get_main_queue()) {
+                self.photos=self.locationPin.photos
+            }
+        }
+        
+        if photos.isEmpty {
+            let methodArguments:[String: AnyObject] = FlickrAPI.sharedInstance().methodArguments(latitude!, lon: longitude!)
+            FlickrAPI.sharedInstance().getImageFromFlickrBySearch(methodArguments) { JSONResult, error  in
+                if let error = error {
+                    print(error)
+                } else {
+                    /* GUARD: Is "photos" key in our result? */
+                    guard let photosDictionary = JSONResult["photos"] as? [String : AnyObject] else {
+                        print("Cannot find keys 'photos' in \(JSONResult)")
+                        return
+                    }
+                    guard let photoDictionary = photosDictionary["photo"] as? [[String : AnyObject]] else {
+                        print("Cannot find keys 'photo' in \(photosDictionary)")
+                        return
+                    }
+                    photoDictionary.map() { (dictionary: [String : AnyObject]) in
+                        dispatch_async(dispatch_get_main_queue()) {
                         let photo = Photo(dictionary: dictionary, context: self.sharedContext)
                         photo.pin = self.locationPin
                         self.photos.append(photo)
+                        }
                     }
                 }
-
                 // Update the table and context on the main thread
                 dispatch_async(dispatch_get_main_queue()) {
                     self.appDelegate.saveContext()
                     self.photoCollectionView.reloadData()
                 }
+
             }
         }
+
      
     }
     
@@ -99,20 +104,20 @@ class AlbumViewController: UIViewController, UICollectionViewDataSource, UIColle
         cell.photoImageView.image = UIImage(named: "placeholder")
         
         let photo = photos[indexPath.row]
+
         
         if let localimage = photo.image {
             cell.photoImageView.image = localimage
         } else if photo.imagePath == nil || photo.imagePath == "" {
             cell.photoImageView.image = UIImage(named: "placeholder")
         }
-            
         else { // If the above cases don't work, then we should download the image
             let task = FlickrAPI.sharedInstance().taskForImage(photo.imagePath!)  { data, error in
                 if let error = error {
                     print("Photo download error: \(error.localizedDescription)")
                 }
                 if let data = data {
-                    // Craete the image
+                    // Create the image
                     let image = UIImage(data: data)
                     // update the model, so that the information gets cached
                     dispatch_async(dispatch_get_main_queue()) {
