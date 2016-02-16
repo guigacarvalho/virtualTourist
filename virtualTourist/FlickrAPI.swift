@@ -59,6 +59,7 @@ class FlickrAPI: NSObject {
             "safe_search": SAFE_SEARCH,
             "extras": EXTRAS,
             "per_page": 10,
+            "page": Int(arc4random_uniform(5)),
             "format": DATA_FORMAT,
             "nojsoncallback": NO_JSON_CALLBACK
         ]

@@ -32,7 +32,7 @@
                                 </variation>
                             </mapView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="CLICK ON THE PINS TO REMOVE THEM" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ept-Ze-2PY">
-                                <rect key="frame" x="0.0" y="558.5" width="600" height="41.5"/>
+                                <rect key="frame" x="0.0" y="559" width="600" height="41"/>
                                 <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="41.5" id="9HF-bj-n45"/>
@@ -97,7 +97,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" indicatorStyle="white" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="ZJg-bv-ouj">
-                                <rect key="frame" x="0.0" y="138" width="600" height="462"/>
+                                <rect key="frame" x="0.0" y="179" width="600" height="421"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="414" id="QZJ-JF-G3R"/>
                                 </constraints>
@@ -161,6 +161,19 @@
                                     <action selector="removePhotos:" destination="8mo-Wf-kg8" eventType="touchUpInside" id="Dja-KZ-L2E"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="udv-jc-9Rp">
+                                <rect key="frame" x="0.0" y="200" width="600" height="41"/>
+                                <color key="backgroundColor" red="0.0" green="0.50196081400000003" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="41" id="iKq-gu-YlD"/>
+                                </constraints>
+                                <state key="normal" title="REFRESH IMAGES">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="refreshImages:" destination="8mo-Wf-kg8" eventType="touchUpInside" id="JYQ-9v-coi"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -170,11 +183,16 @@
                             <constraint firstItem="qCF-BL-WYT" firstAttribute="top" secondItem="ZJg-bv-ouj" secondAttribute="bottom" id="D82-CR-tQg"/>
                             <constraint firstItem="ZJg-bv-ouj" firstAttribute="centerX" secondItem="ekl-SF-iwj" secondAttribute="centerX" id="Eyo-1s-51S"/>
                             <constraint firstItem="z4z-e4-HCg" firstAttribute="width" secondItem="ekl-SF-iwj" secondAttribute="width" id="KbV-UI-ZGS"/>
+                            <constraint firstItem="udv-jc-9Rp" firstAttribute="centerX" secondItem="z4z-e4-HCg" secondAttribute="centerX" id="XLh-cT-bev"/>
                             <constraint firstItem="ZJg-bv-ouj" firstAttribute="leading" secondItem="z4z-e4-HCg" secondAttribute="trailing" constant="-600" id="XPN-M9-wcP"/>
                             <constraint firstItem="z4z-e4-HCg" firstAttribute="top" secondItem="yVS-Pr-xWI" secondAttribute="bottom" id="YQV-46-p2p"/>
+                            <constraint firstItem="udv-jc-9Rp" firstAttribute="leading" secondItem="z4z-e4-HCg" secondAttribute="leading" id="YnG-m8-aAw"/>
                             <constraint firstItem="8cu-vd-eGo" firstAttribute="width" secondItem="ZJg-bv-ouj" secondAttribute="width" id="jHC-rx-ygi"/>
+                            <constraint firstItem="udv-jc-9Rp" firstAttribute="width" secondItem="z4z-e4-HCg" secondAttribute="width" id="kck-hm-wWa"/>
                             <constraint firstItem="ZJg-bv-ouj" firstAttribute="width" secondItem="ekl-SF-iwj" secondAttribute="width" id="kzi-P3-0aN"/>
-                            <constraint firstItem="ZJg-bv-ouj" firstAttribute="top" secondItem="z4z-e4-HCg" secondAttribute="bottom" constant="-60" id="xUC-MR-HQa"/>
+                            <constraint firstItem="udv-jc-9Rp" firstAttribute="top" secondItem="z4z-e4-HCg" secondAttribute="bottom" constant="2" id="w01-c3-esF"/>
+                            <constraint firstItem="udv-jc-9Rp" firstAttribute="leading" secondItem="z4z-e4-HCg" secondAttribute="leading" id="wfx-8w-gpc"/>
+                            <constraint firstItem="ZJg-bv-ouj" firstAttribute="top" secondItem="z4z-e4-HCg" secondAttribute="bottom" constant="-19" id="xUC-MR-HQa"/>
                             <constraint firstItem="z4z-e4-HCg" firstAttribute="leading" secondItem="ekl-SF-iwj" secondAttribute="leadingMargin" constant="-20" id="zZq-eN-hRE"/>
                         </constraints>
                         <variation key="default">

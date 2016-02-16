@@ -55,38 +55,43 @@ class AlbumViewController: UIViewController, UICollectionViewDataSource, UIColle
         photos = self.fetchedResultsController.fetchedObjects as! [Photo]
         
         if photos.isEmpty {
-            let methodArguments:[String: AnyObject] = FlickrAPI.sharedInstance().methodArguments(latitude!, lon: longitude!)
-            FlickrAPI.sharedInstance().getImageFromFlickrBySearch(methodArguments) { JSONResult, error  in
-                if let error = error {
-                    print(error)
-                } else {
-                    /* GUARD: Is "photos" key in our result? */
-                    guard let photosDictionary = JSONResult["photos"] as? [String : AnyObject] else {
-                        print("Cannot find keys 'photos' in \(JSONResult)")
-                        return
-                    }
-                    guard let photoDictionary = photosDictionary["photo"] as? [[String : AnyObject]] else {
-                        print("Cannot find keys 'photo' in \(photosDictionary)")
-                        return
-                    }
-                    photoDictionary.map() { (dictionary: [String : AnyObject]) in
-                        dispatch_async(dispatch_get_main_queue()) {
-                        let photo = Photo(dictionary: dictionary, context: self.sharedContext)
-                        photo.pin = self.locationPin
-                        self.photos.append(photo)
-                        }
-                    }
-                }
-                // Update the table and context on the main thread
-                dispatch_async(dispatch_get_main_queue()) {
-                    self.appDelegate.saveContext()
-                    self.photoCollectionView.reloadData()
-                }
-
-            }
+            fetchTenFlickrPics()
         }
 
      
+    }
+    
+    func fetchTenFlickrPics() {
+        let methodArguments:[String: AnyObject] = FlickrAPI.sharedInstance().methodArguments(latitude!, lon: longitude!)
+        FlickrAPI.sharedInstance().getImageFromFlickrBySearch(methodArguments) { JSONResult, error  in
+            if let error = error {
+                print(error)
+            } else {
+                /* GUARD: Is "photos" key in our result? */
+                guard let photosDictionary = JSONResult["photos"] as? [String : AnyObject] else {
+                    print("Cannot find keys 'photos' in \(JSONResult)")
+                    return
+                }
+                guard let photoDictionary = photosDictionary["photo"] as? [[String : AnyObject]] else {
+                    print("Cannot find keys 'photo' in \(photosDictionary)")
+                    return
+                }
+                photoDictionary.map() { (dictionary: [String : AnyObject]) in
+                    dispatch_async(dispatch_get_main_queue()) {
+                        let photo = Photo(dictionary: dictionary, context: self.sharedContext)
+                        photo.pin = self.locationPin
+                        self.photos.append(photo)
+                    }
+                }
+            }
+            // Update the table and context on the main thread
+            dispatch_async(dispatch_get_main_queue()) {
+                self.appDelegate.saveContext()
+                self.photoCollectionView.reloadData()
+            }
+            
+        }
+
     }
     
     override func didReceiveMemoryWarning() {
@@ -164,6 +169,23 @@ class AlbumViewController: UIViewController, UICollectionViewDataSource, UIColle
             photos.removeAtIndex(item.row)
         }
         photoCollectionView.deleteItemsAtIndexPaths(selectedItems!)
+    }
+    
+    @IBAction func refreshImages(sender: AnyObject) {
+        removeAllPhotos()
+        fetchTenFlickrPics()
+    }
+    func removeAllPhotos() {
+        for photo in photos {
+            photo.image = nil
+            dispatch_async(dispatch_get_main_queue()) {
+                self.sharedContext.deleteObject(photo)
+                self.appDelegate.saveContext()
+            }
+            // Remove the photo from the array
+            photos = [Photo]()
+        }
+        photoCollectionView.reloadData()
     }
     
     lazy var fetchedResultsController: NSFetchedResultsController = {
