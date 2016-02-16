@@ -112,6 +112,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
                     "lon": annotation.coordinate.longitude
                 ]
                 let locationPin = Pin(dictionary: dictionary, context: self.sharedContext)
+                appDelegate.saveContext()
                 locationPins.append(locationPin)
             }
         }
