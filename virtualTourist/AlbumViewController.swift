@@ -46,11 +46,13 @@ class AlbumViewController: UIViewController, UICollectionViewDataSource, UIColle
         mapView.addAnnotation(annotation)
         centerMapOnLocation(location)
         
-        if !locationPin.photos.isEmpty {
-            dispatch_async(dispatch_get_main_queue()) {
-                self.photos=self.locationPin.photos
-            }
+        // Fetch from CoreData
+        do {
+            try fetchedResultsController.performFetch()
+        } catch _ {
+            print("Problem fetching photos!")
         }
+        photos = self.fetchedResultsController.fetchedObjects as! [Photo]
         
         if photos.isEmpty {
             let methodArguments:[String: AnyObject] = FlickrAPI.sharedInstance().methodArguments(latitude!, lon: longitude!)
@@ -120,8 +122,8 @@ class AlbumViewController: UIViewController, UICollectionViewDataSource, UIColle
                     // Create the image
                     let image = UIImage(data: data)
                     // update the model, so that the information gets cached
+                    photo.image = image
                     dispatch_async(dispatch_get_main_queue()) {
-                        photo.image = image
                         // update the cell later, on the main thread
                         cell.photoImageView.image = image
                     }
@@ -153,8 +155,10 @@ class AlbumViewController: UIViewController, UICollectionViewDataSource, UIColle
         for item in selectedItems! {
             
             let photo = photos[item.row]
+            photo.image = nil
             dispatch_async(dispatch_get_main_queue()) {
                 self.sharedContext.deleteObject(photo)
+                self.appDelegate.saveContext()
             }
             // Remove the photo from the array
             photos.removeAtIndex(item.row)
@@ -162,4 +166,19 @@ class AlbumViewController: UIViewController, UICollectionViewDataSource, UIColle
         photoCollectionView.deleteItemsAtIndexPaths(selectedItems!)
     }
     
+    lazy var fetchedResultsController: NSFetchedResultsController = {
+        
+        let fetchRequest = NSFetchRequest(entityName: "Photo")
+        
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "id", ascending: true)]
+        fetchRequest.predicate = NSPredicate(format: "pin == %@", self.locationPin);
+        
+        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
+            managedObjectContext: self.sharedContext,
+            sectionNameKeyPath: nil,
+            cacheName: nil)
+        
+        return fetchedResultsController
+        
+    }()
 }
