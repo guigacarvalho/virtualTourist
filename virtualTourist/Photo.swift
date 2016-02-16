@@ -44,7 +44,7 @@ class Photo : NSManagedObject {
         }
         
         set {
-            FlickrAPI.Caches.imageCache.storeImage(image, withIdentifier: imagePath!)
+            FlickrAPI.Caches.imageCache.storeImage(newValue, withIdentifier: imagePath!)
         }
     }
 }
