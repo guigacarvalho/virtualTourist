@@ -40,11 +40,11 @@ class Photo : NSManagedObject {
 
     var image: UIImage? {
         get {
-            return FlickrAPI.Caches.imageCache.imageWithIdentifier(imagePath)
+            return FlickrAPI.Caches.imageCache.imageWithIdentifier(String(id))
         }
         
         set {
-            FlickrAPI.Caches.imageCache.storeImage(newValue, withIdentifier: imagePath!)
+            FlickrAPI.Caches.imageCache.storeImage(newValue, withIdentifier: String(id))
         }
     }
 }
