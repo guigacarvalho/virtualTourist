@@ -51,11 +51,11 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         
         // Recreating Pins
         do {
-            try fetchedResultsController.performFetch()
+            try fetchedPinsController.performFetch()
         } catch _ {
-            print("Problem fetching photos!")
+            print("Problem fetching pins!")
         }
-        locationPins = self.fetchedResultsController.fetchedObjects as! [Pin]
+        locationPins = self.fetchedPinsController.fetchedObjects as! [Pin]
         for item in locationPins {
             let coordinate = CLLocationCoordinate2D(latitude: Double(item.lat), longitude: Double(item.lon))
             let annotation = MKPointAnnotation()
@@ -82,24 +82,44 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     // User tap action
     func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
         mapView.deselectAnnotation(view.annotation, animated: false)
+        let lat = view.annotation!.coordinate.latitude as Double
+        let lon = view.annotation!.coordinate.longitude as Double
         if(self.removePinsLabel.hidden == true) {
             let albumVC = self.storyboard?.instantiateViewControllerWithIdentifier("albumViewCtrl") as! AlbumViewController
-            albumVC.latitude = view.annotation!.coordinate.latitude as Double
-            albumVC.longitude = view.annotation!.coordinate.longitude as Double
-            let dictionary:[String: AnyObject] = [
-                "lat": view.annotation!.coordinate.latitude,
-                "lon": view.annotation!.coordinate.longitude
-            ]
+            albumVC.latitude = lat
+            albumVC.longitude = lon
             
-            let tempPin = locationPins.filter({
-                $0.lon == dictionary["lon"] as! NSNumber && $0.lon == dictionary["lon"] as! NSNumber
-            })[0]
-            
-            albumVC.locationPin = tempPin
+            albumVC.locationPin = getPinFromAnnotation(lat, longitude: lon)
             
             self.navigationController?.pushViewController(albumVC, animated: true)
         } else {
             mapView.removeAnnotation(view.annotation!)
+            
+            let tempPin = getPinFromAnnotation(lat, longitude: lon)
+            let fetchedPhotosController: NSFetchedResultsController = fetchPhotosforPin(tempPin)
+
+            do {
+                try fetchedPhotosController.performFetch()
+            } catch _ {
+                print("Problem fetching pins!")
+            }
+            let photos = fetchedPhotosController.fetchedObjects as! [Photo]
+
+            // Removing photos from that Pin
+            for photo in photos {
+                photo.image = nil
+                dispatch_async(dispatch_get_main_queue()) {
+                    self.sharedContext.deleteObject(photo)
+                    self.appDelegate.saveContext()
+                }
+            }
+            
+            // Removing the Pin itself
+            dispatch_async(dispatch_get_main_queue()) {
+                // Remove pins from DB, Array and File System
+                self.sharedContext.deleteObject(tempPin)
+                self.appDelegate.saveContext()
+            }
         }
          
 
@@ -147,6 +167,18 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         }
     }
     
+    func getPinFromAnnotation(latitude:Double, longitude:Double) -> Pin {
+        let dictionary:[String: AnyObject] = [
+            "lat": latitude,
+            "lon": longitude
+        ]
+        
+        let tempPin = locationPins.filter({
+            $0.lon == dictionary["lon"] as! NSNumber && $0.lon == dictionary["lon"] as! NSNumber
+        })[0]
+
+        return tempPin
+    }
     
     // MARK: - Core Data Convenience
     lazy var sharedContext: NSManagedObjectContext =  {
@@ -154,12 +186,11 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     }()
     
     
-    lazy var fetchedResultsController: NSFetchedResultsController = {
+    lazy var fetchedPinsController: NSFetchedResultsController = {
         
         let fetchRequest = NSFetchRequest(entityName: "Pin")
         
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "lat", ascending: true)]
-//        fetchRequest.predicate = NSPredicate(format: "pin == %@", self.locationPin);
         
         let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
             managedObjectContext: self.sharedContext,
@@ -169,6 +200,23 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         return fetchedResultsController
         
     }()
+
+    
+    func fetchPhotosforPin(locationPin:Pin) -> NSFetchedResultsController {
+        
+        let fetchRequest = NSFetchRequest(entityName: "Photo")
+        
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "id", ascending: true)]
+        fetchRequest.predicate = NSPredicate(format: "pin == %@", locationPin);
+        
+        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
+            managedObjectContext: self.sharedContext,
+            sectionNameKeyPath: nil,
+            cacheName: nil)
+        
+        return fetchedResultsController
+        
+    }
 
     
 }
