@@ -48,6 +48,21 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         quickTap.numberOfTapsRequired = 0
         quickTap.minimumPressDuration = 0.5
         self.mapView.addGestureRecognizer(quickTap)
+        
+        // Recreating Pins
+        do {
+            try fetchedResultsController.performFetch()
+        } catch _ {
+            print("Problem fetching photos!")
+        }
+        locationPins = self.fetchedResultsController.fetchedObjects as! [Pin]
+        for item in locationPins {
+            let coordinate = CLLocationCoordinate2D(latitude: Double(item.lat), longitude: Double(item.lon))
+            let annotation = MKPointAnnotation()
+            annotation.coordinate = coordinate
+            self.mapView.addAnnotation(annotation)
+        }
+
     }
 
     override func didReceiveMemoryWarning() {
@@ -138,5 +153,22 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         return self.appDelegate.managedObjectContext
     }()
     
+    
+    lazy var fetchedResultsController: NSFetchedResultsController = {
+        
+        let fetchRequest = NSFetchRequest(entityName: "Pin")
+        
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "lat", ascending: true)]
+//        fetchRequest.predicate = NSPredicate(format: "pin == %@", self.locationPin);
+        
+        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
+            managedObjectContext: self.sharedContext,
+            sectionNameKeyPath: nil,
+            cacheName: nil)
+        
+        return fetchedResultsController
+        
+    }()
+
     
 }
