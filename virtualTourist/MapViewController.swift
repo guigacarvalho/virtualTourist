@@ -13,7 +13,7 @@ import CoreData
 
 
 
-class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate, UIGestureRecognizerDelegate {
+class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate, UIGestureRecognizerDelegate {
     
     @IBOutlet weak var editButton: UIButton!
     @IBOutlet weak var mapView: MKMapView!
