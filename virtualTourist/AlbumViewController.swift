@@ -126,9 +126,9 @@ class AlbumViewController: UIViewController, UICollectionViewDataSource, UIColle
                 if let data = data {
                     // Create the image
                     let image = UIImage(data: data)
-                    // update the model, so that the information gets cached
-                    photo.image = image
                     dispatch_async(dispatch_get_main_queue()) {
+                        // update the model, so that the information gets cached
+                        photo.image = image
                         // update the cell later, on the main thread
                         cell.photoImageView.image = image
                     }
